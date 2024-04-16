@@ -112,19 +112,13 @@ int main() {
             // Autenticar al usuario
             if (authenticate(username, password)) {
                 printf("Usuario autenticado: %s\n", username);
-                const char *response = "Autenticación exitosa:";
                 char numero_str[20];
                 sprintf(numero_str, "%d", cont);
-                int longitud_total = strlen(response) + strlen(numero_str) + 1; 
-                char respuesta_final[longitud_total];
-                strcpy(respuesta_final, response);
-                strcat(respuesta_final, ":");
-                strcat(respuesta_final, numero_str);
                 cont--;    
-                send(client_fd, respuesta_final, strlen(respuesta_final), 0);
+                send(client_fd, numero_str, strlen(numero_str), 0);
             } else {
                 printf("Credenciales inválidas para: %s\n", username);
-                const char *response = "Credenciales inválidas";
+                const char *response = "0";
                 send(client_fd, response, strlen(response), 0);
             }
 
