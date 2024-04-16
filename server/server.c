@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <winsock2.h>
+#include <stdbool.h>
 
 #define MAX_CLIENTS 10
 #define BUFFER_SIZE 1024
@@ -30,6 +31,9 @@ int authenticate(char *username, char *password) {
 
 int main() {
     WSADATA wsa_data;
+    bool estado = false;
+    int cont = 2;
+
     if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0) {
         printf("Error al inicializar Winsock\n");
         return 1;
@@ -91,28 +95,44 @@ int main() {
             continue;
         }
         buffer[bytes_received] = '\0';
+        
+        if(!estado){
+            // Separar el nombre de usuario y la contraseña
+            char *username = strtok(buffer, ":");
+            char *password = strtok(NULL, ":");
 
-        // Separar el nombre de usuario y la contraseña
-        char *username = strtok(buffer, ":");
-        char *password = strtok(NULL, ":");
+            if (username == NULL || password == NULL) {
+                printf("Formato de credenciales inválido\n");
+                const char *response = "Formato de credenciales inválido";
+                send(client_fd, response, strlen(response), 0);
+                closesocket(client_fd);
+                continue;
+            }
 
-        if (username == NULL || password == NULL) {
-            printf("Formato de credenciales inválido\n");
-            const char *response = "Formato de credenciales inválido";
-            send(client_fd, response, strlen(response), 0);
-            closesocket(client_fd);
-            continue;
-        }
+            // Autenticar al usuario
+            if (authenticate(username, password)) {
+                printf("Usuario autenticado: %s\n", username);
+                const char *response = "Autenticación exitosa:";
+                char numero_str[20];
+                sprintf(numero_str, "%d", cont);
+                int longitud_total = strlen(response) + strlen(numero_str) + 1; 
+                char respuesta_final[longitud_total];
+                strcpy(respuesta_final, response);
+                strcat(respuesta_final, ":");
+                strcat(respuesta_final, numero_str);
+                cont--;    
+                send(client_fd, respuesta_final, strlen(respuesta_final), 0);
+            } else {
+                printf("Credenciales inválidas para: %s\n", username);
+                const char *response = "Credenciales inválidas";
+                send(client_fd, response, strlen(response), 0);
+            }
 
-        // Autenticar al usuario
-        if (authenticate(username, password)) {
-            printf("Usuario autenticado: %s\n", username);
-            const char *response = "Autenticación exitosa";
-            send(client_fd, response, strlen(response), 0);
-        } else {
-            printf("Credenciales inválidas para: %s\n", username);
-            const char *response = "Credenciales inválidas";
-            send(client_fd, response, strlen(response), 0);
+            if(cont <= 0 ){
+                estado = true;
+
+            }
+
         }
 
         closesocket(client_fd);
