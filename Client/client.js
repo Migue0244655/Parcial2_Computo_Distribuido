@@ -4,20 +4,32 @@ const net = require('net');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = 5060;
+const PORT2 = 5001;
 const HOST = '127.0.0.1';
-let turno = 0; // Utiliza let en lugar de var para reasignar el valor de turno
+let turno = 0;
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Página inicial con formulario de inicio de sesión
 app.get('/', (req, res) => {
-    res.render('index', { message: '' }); // Renderiza la vista index con un mensaje vacío
+    res.render('index', { message: '' }); // Renderiza la vista index con un mensaje vacï¿½o
 });
 
-// Ruta para procesar el formulario de inicio de sesión
+app.post('/send', (req, res) => {
+    // Recibir el mensaje enviado desde el cliente
+    const { col } = req.body;
+    console.log('Mensaje recibido del cliente - col:', req.body);
+
+    // AquÃ­ puedes realizar cualquier lÃ³gica necesaria con el dato recibido
+    // y enviar una respuesta de vuelta al cliente si es necesario
+
+    // Por ejemplo, podrÃ­as devolver un mensaje de confirmaciÃ³n
+    res.json({ message: 'Columna recibida correctamente' });
+});
+
 app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -25,7 +37,7 @@ app.post('/login', (req, res) => {
     const client = new net.Socket();
 
     client.connect(PORT, HOST, () => {
-        console.log('Conexión establecida con el servidor');
+        console.log('Conexion establecida con el servidor');
 
         const credentials = `${username}:${password}`;
         client.write(credentials);
@@ -35,10 +47,10 @@ app.post('/login', (req, res) => {
         console.log(`Respuesta del servidor: ${data}`);
         const response = data.toString();
         const partes = response.split(':');
-        turno = parseInt(partes[0]); // Convierte turno a número entero
+        turno = parseInt(partes[0]); // Convierte turno a nï¿½mero entero
 
         if (turno !== 0) {
-            // Redirige a la página de juego de Conecta 4 si turno es diferente de 0
+            // Redirige a la pï¿½gina de juego de Conecta 4 si turno es diferente de 0
             res.redirect('/juego');
         } else {
             // Renderiza la vista index con un mensaje de usuario no encontrado si turno es 0
@@ -49,7 +61,7 @@ app.post('/login', (req, res) => {
     });
 
     client.on('close', () => {
-        console.log('Conexión cerrada');
+        console.log('Conexiï¿½n cerrada');
     });
 
     client.on('error', (err) => {
@@ -58,16 +70,16 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Ruta para la página del juego de Conecta 4
+// Ruta para la pï¿½gina del juego de Conecta 4
 app.get('/juego', (req, res) => {
     res.render('juego'); // Renderiza la vista del juego de Conecta 4
 });
 
 // Ruta para manejar cualquier otra solicitud no encontrada
 app.use((req, res) => {
-    res.status(404).send('Página no encontrada');
+    res.status(404).send('Pï¿½gina no encontrada');
 });
 
-app.listen(PORT, () => {
-    console.log(`Servidor Express iniciado en http://localhost:${PORT}`);
+app.listen(PORT2, () => {
+    console.log(`Servidor Express iniciado en http://localhost:${PORT2}`);
 });
