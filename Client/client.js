@@ -15,18 +15,26 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-    res.render('index', { message: '' }); // Renderiza la vista index con un mensaje vac�o
+    res.render('index', { message: '' });
 });
 
 app.post('/send', (req, res) => {
-    // Recibir el mensaje enviado desde el cliente
     const { col } = req.body;
-    console.log('Mensaje recibido del cliente - col:', req.body);
+    console.log('Mensaje recibido del cliente:', col);
 
-    // Aquí puedes realizar cualquier lógica necesaria con el dato recibido
-    // y enviar una respuesta de vuelta al cliente si es necesario
+    const client = new net.Socket();
+    client.connect(PORT, HOST, () => {
+        console.log('Conexion establecida con el servidor');
+        if (!col || col === '') {
+            console.log('Error: no se recibieron datos válidos');
+        }
+        client.write(col.toString());
+    });
+    client.on('data', (data) => {
+        console.log(`Respuesta del servidor: ${data}`);
+        client.destroy();
+    });
 
-    // Por ejemplo, podrías devolver un mensaje de confirmación
     res.json({ message: 'Columna recibida correctamente' });
 });
 

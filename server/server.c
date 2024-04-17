@@ -71,14 +71,14 @@ int main() {
             perror("Error al aceptar la conexión");
             continue;
         }
-
         printf("Nueva conexión aceptada desde %s:%d\n",
                inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
         // Recibir las credenciales del cliente
         ssize_t bytes_received = recv(client_fd, buffer, BUFFER_SIZE - 1, 0);
+
         if (bytes_received <= 0) {
-            perror("Error al recibir datos");
+            perror("Error al recibir datoooos");
             close(client_fd);
             continue;
         }
@@ -87,7 +87,7 @@ int main() {
         // Separar el nombre de usuario y la contraseña
         char *username = strtok(buffer, ":");
         char *password = strtok(NULL, ":");
-
+        printf(buffer);
         if (username == NULL || password == NULL) {
             printf("Formato de credenciales inválido\n");
             const char *response = "Formato de credenciales inválido";
