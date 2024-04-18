@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Inicio de sesión</title>
+  <title>Inicio de sesión</title>
 </head>
 <body>
-    <h1>Inicio de sesión</h1>
-    <form action="/login" method="POST">
-        <label for="username">Nombre de usuario:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <input type="submit" value="Iniciar sesión">
-    </form>
+  <h1>Inicio de sesión</h1>
+  <form action="/login" method="POST">
+    <label for="username">Nombre de usuario:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <input type="submit" value="Iniciar sesión">
+  </form>
+
+  <h2>Instrucciones:</h2>
+  <p><strong>ACERCA DE LA APP -> CONECTA 4</strong></p>
+  <p>Primero es necesario ingresar un usuario y una contraseña, para poder ingresar al juego solo es posible ingresar con los siguientes usuarios y contraseñas:</p>
+  <ul>
+    <li>usuario: user1 password: password1</li>
+    <li>usuario: user2 password: password2</li>
+    <li>usuario: user3 password: password3</li>
+  </ul>
+  <p>Después, el juego te redireccionará a una página donde ya será posible empezar la partida.</p>
+  <p>Cada jugador dispone de 21 fichas de colores amarillo y rojo para colocar en un tablero compuesto por 7 columnas y 6 filas. En cada turno, un jugador puede colocar una ficha en una de las casillas del tablero. El objetivo es conectar 4 fichas del mismo color de manera consecutiva, ya sea en posición vertical, horizontal o diagonal. Solo es necesario picar la casilla donde quieras colocar tu ficha y se colocará. El jugador que logre esta configuración primero será el ganador. En caso de que todas las fichas sean utilizadas y ningún jugador complete la alineación, se declara un empate.</p>
 </body>
 </html>
